@@ -1,5 +1,5 @@
 # Graduation-Project
 Java Spring website
 
-demo video is big, 
-you can see in my Saramin portfolio.
+demo video link
+https://drive.google.com/file/d/1OCJjynDE4KUnJnLJpYNz4ZASGUdPkXxu/view?usp=sharing
