@@ -1,4 +1,5 @@
 # Graduation-Project
 Java Spring website
 
-demo video is in my Saramin portfolio.
+demo video is big, 
+you can see in my Saramin portfolio.
