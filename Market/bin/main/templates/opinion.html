@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>후기 게시판</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+            .conversation-wrap
+    {
+        box-shadow: -2px 0 3px #ddd;
+        padding:0;
+        max-height: 400px;
+        overflow: auto;
+    }
+    .conversation
+    {
+        padding:5px;
+        border-bottom:1px solid #ddd;
+        margin:0;
+
+    }
+
+    .message-wrap
+    {
+        box-shadow: 0 0 3px #ddd;
+        padding:0;
+
+    }
+    .msg
+    {
+        padding:5px;
+        /*border-bottom:1px solid #ddd;*/
+        margin:0;
+    }
+    .msg-wrap
+    {
+        padding:10px;
+        max-height: 400px;
+        overflow: auto;
+
+    }
+
+    .time
+    {
+        color:#bfbfbf;
+    }
+
+    .send-wrap
+    {
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding:10px;
+        /*background: #f8f8f8;*/
+    }
+
+    .send-message
+    {
+        resize: none;
+    }
+
+    .highlight
+    {
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+    }
+
+    .send-message-btn
+    {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+
+        border-bottom-right-radius: 0;
+    }
+    .btn-panel
+    {
+        background: #f7f7f9;
+    }
+
+    .btn-panel .btn
+    {
+        color:#b8b8b8;
+
+        transition: 0.2s all ease-in-out;
+    }
+
+    .btn-panel .btn:hover
+    {
+        color:#666;
+        background: #f8f8f8;
+    }
+    .btn-panel .btn:active
+    {
+        background: #f8f8f8;
+        box-shadow: 0 0 1px #ddd;
+    }
+
+    .btn-panel-conversation .btn,.btn-panel-msg .btn
+    {
+
+        background: #f8f8f8;
+    }
+    .btn-panel-conversation .btn:first-child
+    {
+        border-right: 1px solid #ddd;
+    }
+
+    .msg-wrap .media-heading
+    {
+        color:#003bb3;
+        font-weight: 700;
+    }
+
+
+    .msg-date
+    {
+        background: none;
+        text-align: center;
+        color:#aaa;
+        border:none;
+        box-shadow: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+    body::-webkit-scrollbar {
+        width: 12px;
+    }
+
+
+    /* Let's get this party started */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+/*        -webkit-border-radius: 10px;
+        border-radius: 10px;*/
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+/*        -webkit-border-radius: 10px;
+        border-radius: 10px;*/
+        background:#ddd;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+    ::-webkit-scrollbar-thumb:window-inactive {
+        background: #ddd;
+    }
+
+    </style>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</head>
+<style>
+    #divheader {
+        background-color: black;
+    }
+</style>
+<div class="container bootstrap snippet">
+    <div id="divheader" class="row">
+        <div class="col-sm-10"><h1><font color="white">후기 게시판</font></h1></div>
+        <div class="col-sm-2"><a href="/users" class="pull-right"><a href="mypage"><img title="product image" src="img/bag.jpg"
+                                                                       style="width: 100px; height: 100px;"></a></div>
+    </div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+<body>
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+<div class="container">
+    <div class="row">
+        <form style="margin-left: 0" th:action="@{/opinions}" th:method="get">
+            <input type="text" placeholder="후기 검색하기" name="content" title="검색">
+            <input type="submit" id="search-form" th:onclick="getSearch()" value="검색">
+        </form>
+    </div>
+    <p>&nbsp;</p>
+    <div class="row">
+<!--전체후기 + 후기검색-->
+        <div class="conversation-wrap col-lg-3" style="border: 1px solid #FAFAFA; min-height: 400px;">
+            <div class="media conversation" th:each="data, i:${opinions}">
+                <div class="media-body media-heading" th:onclick="'getOpinion(\'' + ${data.id} + '\')'">
+                    <h5 class="media-heading" id="userName" th:text="${data.getUserName()}"></h5>
+                    <small th:if="${data.getContent().length()<=20}" th:text="${data.getContent()}"></small>
+                    <small th:unless="${data.getContent().length()<=20}" th:text="${data.getContent().substring(0,20)+'...'}"></small>
+                </div>
+            </div>
+        </div>
+<!--        회사별 후기-->
+        <div class="message-wrap col-lg-8" style="border: 1px solid #FAFAFA; min-height: 400px;">
+<!--            후기내용-->
+            <div class="msg-wrap">
+                <div class="media msg ">
+                    <div th:if="${opinion!=null}" class="media-body">
+                        <small id="opinion-time" th:text="${opinion.getTime()}" class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                        <h5 id="opinion-username" th:text="${opinion.getUserName()}" class="media-heading">hodo**@naver.com</h5>
+                        <pre id="opinion-content" th:text="${opinion.getContent()}" style="background-color: white; border: none; font-size: small">이 글은 전통시장을 살리기 위한 목적으로 만들어졌으며 캡스톤 디자인 수업에 사용되고 있습니다.</pre>
+                    </div>
+                    <div th:unless="${opinion!=null}" class="media-body">
+                        <small id="opinion-time" class="pull-right time"><i class="fa fa-clock-o"></i></small>
+                        <h5 id="opinion-username" class="media-heading"></h5>
+                        <pre id="opinion-content" style="background-color: white; border: none; font-size: small">좌측 검색 결과를 클릭해주세요.</pre>
+                    </div>
+                </div>
+            </div>
+<!--            후기 작성폼-->
+            <form th:action="@{/opinion}" th:method="post">
+                <div class="send-wrap">
+                    <textarea class="form-control send-message" name="content" rows="3" style="width: 100%"
+                              placeholder="가게 이용에 대한 후기를 남겨주세요! 이용하신 시장과 가게의 이름과 물건의 정보를 상세히 남겨주시면 감사하겠습니다!"></textarea>
+                </div>
+                <div class="btn-panel">
+                    <input type="submit" class=" col-lg-4 text-right btn send-message-btn pull-right" value="글쓰기">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function getOpinion(id) {
+        console.log(id);
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            url: `http://localhost:8080/opinion/${id}`,
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                document.getElementById('opinion-time').innerHTML = data.time;
+                document.getElementById('opinion-content').innerHTML = data.content;
+                document.getElementById('opinion-username').innerHTML = data.userName;
+            },
+            error: function (e) {
+                console.log('실패');
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Icons font CSS-->
+<!--    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">-->
+<!--    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">-->
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+
+    <!-- Vendor CSS-->
+<!--    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">-->
+<!--    <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">-->
+
+    <!-- Main CSS-->
+    <link href="css/main.css" rel="stylesheet" media="all">
+<link rel="stylesheet" href="css/register.css" />
+<title>고객 회원가입</title>
+</head>
+
+<body>
+    <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+       <div class="wrapper wrapper--w790">
+           <div class="card card-5">
+               <div class="card-heading">
+                   <h2 class="title">회원가입</h2>
+               </div>
+               <div class="card-body">
+                   <form th:action="@{/signup-client}" th:object="${request}" th:method="post">
+                       <div class="form-row m-b-55">
+                           <div class="name">이름</div>
+                           <div class="value">
+                               <div class="row row-space">
+                                   <div class="col-2">
+                                       <div class="input-group-desc">
+                                           <input class="input--style-5" type="text" th:name="userName">
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="form-row">
+                           <div class="name">아이디</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="text" th:name="userId">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">비밀번호</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="password" th:name="password">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">비밀번호 확인</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="password">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">지역</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <div class="rs-select2 js-select-simple select--no-search">
+                                       <label>
+                                           <select th:name="region">
+                                               <option disabled="disabled" selected="selected">지역을 선택하세요</option>
+                                               <option th:value="SEOUL">서울특별시</option>
+                                               <option th:value="INCHEON">인천광역시</option>
+                                               <option th:value="DAEJEON">대전광역시</option>
+                                               <option th:value="DAEGU">대구광역시</option>
+                                               <option th:value="GWANGJU">광주광역시</option>
+                                               <option th:value="BOOSAN">부산광역시</option>
+                                               <option th:value="ULSAN">울산광역시</option>
+                                               <option th:value="GYEONGGI">경기도</option>
+                                               <option th:value="GANGWON">강원도</option>
+                                               <option th:value="CHUNGBUK">충청북도</option>
+                                               <option th:value="CHUNGNAM">충청남도</option>
+                                               <option th:value="GYEONGBUK">경상북도</option>
+                                               <option th:value="GYEONGNAM">경상남도</option>
+                                               <option th:value="JEONBUK">전라북도</option>
+                                               <option th:value="JEONNAM">전라남도</option>
+                                               <option th:value="SEJONG">세종시</option>
+                                               <option th:value="JEJU">제주도</option>
+                                           </select>
+                                       </label>
+                                       <div class="select-dropdown"></div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">주소</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="text" th:name="address">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">이메일</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="email" th:name="email">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="form-row">
+                           <div class="name">전화번호</div>
+                           <div class="value">
+                               <div class="input-group">
+                                   <input class="input--style-5" type="text" th:name="phoneNumber" placeholder="ex) 010-0000-0000">
+                               </div>
+                           </div>
+                       </div>
+
+                       <div>
+                           <button class="btn btn--radius-2 btn--red" type="submit">가입하기</button>
+                       </div>
+                   </form>
+               </div>
+           </div>
+       </div>
+   </div>
+</body>
+</html>
