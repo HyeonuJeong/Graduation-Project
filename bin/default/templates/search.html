@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>상품검색</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        .product_view .modal-dialog {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pre-cost {
+            text-decoration: line-through;
+            color: #a5a5a5;
+        }
+
+        .space-ten {
+            padding: 10px 0;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container bootstrap snippet">
+    <div style="background-color: black;" class="row">
+        <div class="col-sm-10"><h1><font color="white">상품 검색</font></h1></div>
+        <div class="col-sm-2"><a href="mypage"><img title="product image" src="img/bag.jpg"
+                                                         style="width: 100px; height: 100px;"></a></div>
+    </div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form th:action="@{/search}" th:method="get">
+                <h3>시장 이름 검색</h3>
+                <input type="text" th:value="${marketName}" name="marketName" title="검색">
+                <input type="submit" value="검색">
+            </form>
+        </div>
+        <div class="col-md-4">
+            <form th:action="@{/search}" th:method="get">
+                <h3>상품 이름 검색</h3>
+                <input type="text" th:value="${productName}" name="productName" title="검색">
+                <input type="submit" value="검색">
+            </form>
+        </div>
+    </div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4" th:each="data, i:${list}">
+            <div class="thumbnail">
+                <img style="height: 150px;" th:src="${data.src}">
+                <div class="caption">
+                    <span th:id="${data.id}" style="display: none;"></span>
+                    <span th:text="${data.weight}" style="font-size: 20px;"></span>(g) /
+                    <span th:text="${data.price}" style="font-size: 20px;"></span>원
+                    <br/>
+                    <span th:text="${data.marketName}" style="font-size: 20px;"></span> -
+                    <span th:text="${data.productName}" style="font-size: 20px;"></span>
+                    <hr/>
+                    <p th:text="${data.content}"></p>
+                </div>
+                <div class="btn-ground text-center">
+                    <button id="details" type="button" th:onclick="'ajax_submit(\'' + ${data.id} + '\')'" class="btn btn-primary" data-toggle="modal" data-target="#product_view"><i
+                            class="fa fa-search"></i>상세보기
+                    </button>
+                    <button id="addCart" type="button" th:onclick="ajax_addCart([[${data.id}]], [[${data.productName}]], [[${data.weight}]], [[${data.content}]], [[${data.price}]] );" class="btn btn-primary"><i
+                            class="fa fa-search"></i>장바구니
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--모달-->
+<div class="modal fade product_view" id="product_view">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" class="class pull-right"><span
+                        class="glyphicon glyphicon-remove"></span></a>
+                <h3 class="modal-title">상품 상세</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 product_img">
+                        <img id="modal-src" style="width: 100%">
+                    </div>
+                    <div class="col-md-6 product_content">
+                        <span id="modal-marketName" style="font-size: 20px;"></span> -
+                        <span id="modal-productName" style="font-size: 20px;"></span>
+                        <hr/>
+                        <p id="modal-storeName"></p>
+                        <span id="modal-weight" style="font-size: 15px;"></span>(g) /
+                        <span id="modal-price" style="font-size: 15px;"></span>
+                        <p id="modal-userName">판매자 성함</p>
+                        <p id="modal-phoneNumber">판매자 연락처</p>
+                        <p id="modal-content">상품 자랑 한마디</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--페이지네이션-->
+<div class="wrapper">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:if="${nowPage / 10 == 0 && nowPage > 10}">
+                <a class="page-link" th:href="@{/search?(page=${startPage - 10})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            <li th:if="${startPage < totalPages}" class="page-item"><a th:if="${startPage==nowPage}" style="color: red" class="page-link" th:text="${startPage+1}" th:href="@{/search?(page=${startPage},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage < totalPages}" class="page-item"><a th:unless="${startPage==nowPage}" class="page-link" th:text="${startPage+1}" th:href="@{/search?(page=${startPage},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 1 < totalPages}" class="page-item"><a th:if="${startPage+1==nowPage}" style="color: red" class="page-link" th:text="${startPage+2}" th:href="@{/search?(page=${startPage+1},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 1 < totalPages}" class="page-item"><a th:unless="${startPage+1==nowPage}" class="page-link" th:text="${startPage+2}" th:href="@{/search?(page=${startPage+1},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 2 < totalPages}" class="page-item"><a th:if="${startPage+2==nowPage}" style="color: red" class="page-link" th:text="${startPage+3}" th:href="@{/search?(page=${startPage+2},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 2 < totalPages}" class="page-item"><a th:unless="${startPage+2==nowPage}" class="page-link" th:text="${startPage+3}" th:href="@{/search?(page=${startPage+2},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 3 < totalPages}" class="page-item"><a th:if="${startPage+3==nowPage}" style="color: red" class="page-link" th:text="${startPage+4}" th:href="@{/search?(page=${startPage+3},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 3 < totalPages}" class="page-item"><a th:unless="${startPage+3==nowPage}" class="page-link" th:text="${startPage+4}" th:href="@{/search?(page=${startPage+3},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 4 < totalPages}" class="page-item"><a th:if="${startPage+4==nowPage}" style="color: red" class="page-link" th:text="${startPage+5}" th:href="@{/search?(page=${startPage+4},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 4 < totalPages}" class="page-item"><a th:unless="${startPage+4==nowPage}" class="page-link" th:text="${startPage+5}" th:href="@{/search?(page=${startPage+4},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 5 < totalPages}" class="page-item"><a th:if="${startPage+5==nowPage}" style="color: red" class="page-link" th:text="${startPage+6}" th:href="@{/search?(page=${startPage+5},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 5 < totalPages}" class="page-item"><a th:unless="${startPage+5==nowPage}" class="page-link" th:text="${startPage+6}" th:href="@{/search?(page=${startPage+5},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 6 < totalPages}" class="page-item"><a th:if="${startPage+6==nowPage}" style="color: red" class="page-link" th:text="${startPage+7}" th:href="@{/search?(page=${startPage+6},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 6 < totalPages}" class="page-item"><a th:unless="${startPage+6==nowPage}" class="page-link" th:text="${startPage+7}" th:href="@{/search?(page=${startPage+6},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 7 < totalPages}" class="page-item"><a th:if="${startPage+7==nowPage}" style="color: red" class="page-link" th:text="${startPage+8}" th:href="@{/search?(page=${startPage+7},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 7 < totalPages}" class="page-item"><a th:unless="${startPage+7==nowPage}" class="page-link" th:text="${startPage+8}" th:href="@{/search?(page=${startPage+7},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 8 < totalPages}" class="page-item"><a th:if="${startPage+8==nowPage}" style="color: red" class="page-link" th:text="${startPage+9}" th:href="@{/search?(page=${startPage+8},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 8 < totalPages}" class="page-item"><a th:unless="${startPage+8==nowPage}" class="page-link" th:text="${startPage+9}" th:href="@{/search?(page=${startPage+8},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 9 < totalPages}" class="page-item"><a th:if="${startPage+9==nowPage}" style="color: red" class="page-link" th:text="${startPage+10}" th:href="@{/search?(page=${startPage+9},productName=${productName},marketName=${marketName})}"></a></li>
+            <li th:if="${startPage + 9 < totalPages}" class="page-item"><a th:unless="${startPage+9==nowPage}" class="page-link" th:text="${startPage+10}" th:href="@{/search?(page=${startPage+9},productName=${productName},marketName=${marketName})}"></a></li>
+            <li class="page-item" th:unless="${startPage == (totalPages) - (totalPages % 10)}">
+                <a class="page-link" th:href="@{/search?(page=${(nowPage + 10) - (nowPage % 10)})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<script>
+    function ajax_submit(id) {
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            url: `http://localhost:8080/product/${id}`,
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                document.getElementById('modal-src').setAttribute('src',data.src);
+                document.getElementById('modal-marketName').innerHTML = data.marketName;
+                document.getElementById('modal-productName').innerHTML = data.productName;
+                document.getElementById('modal-storeName').innerHTML = data.storeName;
+                document.getElementById('modal-weight').innerHTML = data.weight;
+                document.getElementById('modal-price').innerHTML = data.price + '원';
+                document.getElementById('modal-userName').innerHTML = data.userName;
+                document.getElementById('modal-phoneNumber').innerHTML = data.phoneNumber;
+                document.getElementById('modal-content').innerHTML = data.content;
+            },
+            error: function (e) {
+                console.log('실패');
+            }
+        });
+    }
+    
+    function ajax_addCart(id, productName, weight, content, price) {
+		let data = {
+			id: id,
+			productName: productName,
+			weight: weight,
+			content: content,
+			price: price			
+		} ;
+		
+		$.ajax({
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            url: `http://localhost:8080/addCart`,
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            data: JSON.stringify(data),
+            complete : function (data) {
+                
+            }
+        });
+    }
+</script>
+</body>
+</html>
